@@ -1,103 +1,147 @@
 //Global Variables
-float xFace, yFace, widthDiameterFace, heightDiameterFace, faceRadius, xCenter, smallerDimension;
-float xLeftEye, yLeftEye, eyeDiameter, xRightEye, yRightEye;
-float xLeftPupil, yLeftPupil, xRightPupil, yRightPupil, pupilDiameter;
-color black=#000000;
-float xNoseBridge, yNoseBridge, xLeftNostril, yLeftNostril, yRightNostril, xRightNostril;
-int thack=10;
-float xMeasle, yMeasle, measleDiameter;
-color resetWhite=#FFFFFF, red=#FF0000; //similar to int declaration
+Boolean nightMode=false;
+float startX, startY, startWidth, startHeight;
+float stopX, stopY, stopWidth, stopHeight;
+float resetX, resetY, resetWidth, resetHeight;
+color yellow=#FFFB74, pink=#FF4DB8, resetButtonColour=#FFFFFF, buttonFill;
+float measles;
+String title="Measles Drawing Program", click="Right click for Night Mode backgrounds. Press Mouse Wheel for normal backgrounds.";
+String start="START", stop="PAUSE", reset="RESET";
+PFont buttonFont; 
+float titleX, titleY, titleWidth, titleHeight, clickX, clickY, clickWidth, clickHeight; 
+float rect, rectX, rectY, rectWidth, rectHeight;
 //
-void setup() 
+
+//
+void setup()
 {
   //CANVAS will be added later
-  size(800, 600); //Landscape
-  //
-  //Population
-  xCenter = width/2;
-  float yCenter = height/2;
-  xFace = xCenter;
-  yFace = yCenter;
-  if ( width >= height ) {
-    smallerDimension = height;
+  size(1200, 600); //Landscape
+  println(width, height, displayWidth, displayHeight);
+  int appWidth = width;
+  int appHeight = height;
+  if ( width > displayWidth || height > displayHeight ) { 
+    appWidth = displayWidth;
+    appHeight = displayHeight;
+    println("CANVAS needed to be readjusted.");
   } else {
-    smallerDimension = width;
-  }//End dimension choice
-  widthDiameterFace = smallerDimension;
-  heightDiameterFace = smallerDimension;
-
-  xLeftEye = xCenter-smallerDimension*1/4.5;
-  yLeftEye = yCenter-smallerDimension*1/5;
-  eyeDiameter = smallerDimension/5;
-  xRightEye = xCenter+smallerDimension*1/4.5;
-  yRightEye = yCenter-smallerDimension*1/5;
-
-  xLeftPupil = xLeftEye;
-  yLeftPupil = yLeftEye;
-  xRightPupil = xRightEye;
-  yRightPupil = yRightEye;
-  pupilDiameter = smallerDimension/7;
-
-  xNoseBridge = xCenter;
-  yNoseBridge = yCenter-smallerDimension*1/8;
-  xLeftNostril = xCenter-smallerDimension*1/8; 
-  yLeftNostril = yCenter+smallerDimension*1/12;
-  xRightNostril = xCenter+smallerDimension*1/8;
-  yRightNostril = yLeftNostril;
-
-  faceRadius = smallerDimension/2;
+  }
   //
-  Boolean nightMode=true;
-  color backgroundColour = ( nightMode==true) ? color(random(255), random(255), 0) : color(random(255), random(255), random(255)) ; //ternary operator, similar to IF-else
-  background( backgroundColour );
-  ellipse(xFace, yFace, widthDiameterFace, heightDiameterFace);
+  populatingVariables();
+  int centerX = width/2;
+  int centerY = height/2;
   //
-  PImage img = loadImage("R.png");
-  image(img, 320, 400, 160, 120);
+  startX = width*17/20;
+  startY = centerY - height*1/5;
+  startWidth = width*1/8;
+  startHeight = height*1/8;
   //
+  stopX = startX;
+  stopY = centerY;
+  stopWidth = startWidth;
+  stopHeight = startHeight;
+  //
+  resetX = startX;
+  resetY = centerY + height*1/5;
+  resetWidth = width*1/8;
+  resetHeight = height*1/8;
+  //
+
+  //
+  titleX = width*1/50;
+  titleY = centerY - height*1/4;
+  titleWidth = width*1/6;
+  titleHeight = height*1/4;
+  clickX = titleX;
+  clickY = centerY;
+  clickWidth = width*1/6;
+  clickHeight = height*1/4;
+  //
+  rectX = titleX;
+  rectY = titleY;
+  rectWidth = titleWidth;
+  rectHeight = titleHeight*2;
+  //Text setup
+  buttonFont = createFont ("Gabriola", 48);
 }//End setup
+//
 //
 void draw()
 {
-  ellipse(xLeftEye, yLeftEye, eyeDiameter, eyeDiameter);
-  ellipse(xRightEye, yRightEye, eyeDiameter, eyeDiameter);
+  imageDraw();
+
+
+  //Hover over
+  if ( mouseX>startX && mouseX<startX+startWidth && mouseY>startY && mouseY<startY+startHeight ) {
+    buttonFill = yellow;
+  } else {
+    buttonFill = pink;
+  } //End Hover over
+  fill(buttonFill);
+  rect (startX, startY, startWidth, startHeight);
+  fill(resetButtonColour);
+  //
+  if ( mouseX>stopX && mouseX<stopX+stopWidth && mouseY>stopY && mouseY<stopY+stopHeight ) {
+    buttonFill = yellow;
+  } else {
+    buttonFill = pink;
+  } //End Hover over
+  fill(buttonFill);
+  rect (stopX, stopY, stopWidth, stopHeight);
+  fill(resetButtonColour);
+  //
+  if ( mouseX>resetX && mouseX<resetX+resetWidth && mouseY>resetY && mouseY<resetY+resetHeight ) {
+    buttonFill = yellow;
+  } else {
+    buttonFill = pink;
+  } //End Hover over
+  fill(buttonFill);
+  rect (resetX, resetY, resetWidth, resetHeight);
+  fill(resetButtonColour);
+  //
+  rect(rectX, rectY, rectWidth, rectHeight); //
+  //
   fill(black);
-  ellipse (xLeftPupil, yLeftPupil, pupilDiameter, pupilDiameter);
-  ellipse (xRightPupil, yRightPupil, pupilDiameter, pupilDiameter);
-  fill(resetWhite);
-  strokeWeight(thack);
-  triangle(xNoseBridge, yNoseBridge, xLeftNostril, yLeftNostril, xRightNostril, yRightNostril);
-  //strokeCap(SQUARE); //ROUND (default), PROJECT
-  strokeWeight(1); //resets default
-  //
-  PImage img = loadImage("R.png");
-  image(img, 320, 400, 160, 120);
-  //
-  xMeasle = random(xCenter-faceRadius, xCenter+faceRadius);
-  yMeasle = random(0, smallerDimension); //if zero is first, then default
-  fill(red);
-  noStroke();
-  measleDiameter = random(smallerDimension*1/70, smallerDimension*1/30); 
-  ellipse(xMeasle, yMeasle, measleDiameter, measleDiameter);
-  stroke(1); //reset default
-  fill(resetWhite);
+  textAlign (CENTER, CENTER);
+  textFont(buttonFont, 25);
+  text(start, startX, startY, startWidth, startHeight); //start
+  text(stop, stopX, stopY, stopWidth, stopHeight); //pause
+  text(reset, resetX, resetY, resetWidth, resetHeight); //reset
+  text(click, clickX, clickY, clickWidth, clickHeight); //desc
+  textFont(buttonFont, 50);
+  text(title, titleX, titleY, titleWidth, titleHeight); //title
+  //fill(resetWhite);
 }//End draw
+//
 //
 void keyPressed() {
 }//End keyPressed
 //
-void mousePressed() {
-  if () {
-    
-  } else {
-    
-  }
-  nd nightMode switch
-
-  /*
-  color backgroundColour = ( nightMode==true) ? color(random(255), random(255), 0) : color(random(255), random(255), random(255)) ; //ternary operator, similar to IF-else
-   background( backgroundColour );
-   */
-}//End mousePressed
 //
+void mousePressed() {  
+  if ( mouseButton == RIGHT ) { //Night Mode TRUE  
+    backgroundColour = color( random(255), random(255), 0 );  
+    background( backgroundColour );  
+    fill(peach);
+    ellipse(xFace, yFace, widthDiameterFace, heightDiameterFace);
+  }//End Right Mouse Button
+  if ( mouseButton == CENTER ) { //Night Mode FALSE  
+    backgroundColour = color( random(255), random(255), random(255) );  
+    background( backgroundColour );  
+    fill(peach);
+    ellipse(xFace, yFace, widthDiameterFace, heightDiameterFace);
+  }//End Right Mouse Button
+  if ( mouseX>startX && mouseX<startX+startWidth && mouseY>startY && mouseY<startY+startHeight ) {
+    drawM=true;
+  } 
+  if ( mouseX>stopX && mouseX<stopX+stopWidth && mouseY>stopY && mouseY<stopY+stopHeight ) {
+    drawM=false;
+  }
+  if ( mouseX>resetX && mouseX<resetX+resetWidth && mouseY>resetY && mouseY<resetY+resetHeight ) {
+    fill(peach);
+    ellipse(xFace, yFace, widthDiameterFace, heightDiameterFace);
+    drawM=false;
+  };
+}//End mousePressed  
+//  
 //End MAIN Program

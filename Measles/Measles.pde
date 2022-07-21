@@ -6,10 +6,11 @@ float resetX, resetY, resetWidth, resetHeight;
 color yellow=#FFFB74, pink=#FF4DB8, resetButtonColour=#FFFFFF, buttonFill;
 float measles;
 String title="Measles Drawing Program", click="Right click for Night Mode backgrounds. Press Mouse Wheel for normal backgrounds.";
-String start="START", stop="PAUSE", reset="RESET";
+String start="START", stop="PAUSE", reset="RESET", quit="QUIT";
 PFont buttonFont; 
 float titleX, titleY, titleWidth, titleHeight, clickX, clickY, clickWidth, clickHeight; 
 float rect, rectX, rectY, rectWidth, rectHeight;
+float quitX, quitY, quitWidth, quitHeight;
 //
 
 //
@@ -61,6 +62,11 @@ void setup()
   rectY = titleY;
   rectWidth = titleWidth;
   rectHeight = titleHeight*2;
+  //
+  quitX = titleX;
+  quitY = height*5/6;
+  quitWidth = titleWidth;
+  quitHeight = resetHeight;
   //Text setup
   buttonFont = createFont ("Gabriola", 48);
 }//End setup
@@ -99,7 +105,17 @@ void draw()
   rect (resetX, resetY, resetWidth, resetHeight);
   fill(resetButtonColour);
   //
-  rect(rectX, rectY, rectWidth, rectHeight); //
+  if ( mouseX>quitX && mouseX<quitX+quitWidth && mouseY>quitY && mouseY<quitY+quitHeight ) {
+    buttonFill = yellow;
+  } else {
+    buttonFill = pink;
+  } //End Hover over
+  fill(buttonFill);
+  rect (quitX, quitY, quitWidth, quitHeight);
+  fill(resetButtonColour); 
+  //
+  rect(rectX, rectY, rectWidth, rectHeight);
+
   //
   fill(black);
   textAlign (CENTER, CENTER);
@@ -108,6 +124,7 @@ void draw()
   text(stop, stopX, stopY, stopWidth, stopHeight); //pause
   text(reset, resetX, resetY, resetWidth, resetHeight); //reset
   text(click, clickX, clickY, clickWidth, clickHeight); //desc
+  text(quit, quitX, quitY, quitWidth, quitHeight); //desc
   textFont(buttonFont, 50);
   text(title, titleX, titleY, titleWidth, titleHeight); //title
   //fill(resetWhite);
@@ -142,6 +159,7 @@ void mousePressed() {
     ellipse(xFace, yFace, widthDiameterFace, heightDiameterFace);
     drawM=false;
   };
+    if ( mouseX>quitX && mouseX<quitX+quitWidth && mouseY>quitY && mouseY<quitY+quitHeight ) exit();
 }//End mousePressed  
 //  
 //End MAIN Program
